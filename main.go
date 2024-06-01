@@ -5,6 +5,7 @@ import (
 	"github.com/igordevopslabs/zapscan-integration/config"
 	docs "github.com/igordevopslabs/zapscan-integration/docs"
 	"github.com/igordevopslabs/zapscan-integration/migrations"
+	"github.com/igordevopslabs/zapscan-integration/services"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -29,6 +30,8 @@ func main() {
 	//Documentation
 	docs.SwaggerInfo.BasePath = "/"
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+
+	go services.StartSQSConsumer()
 
 	r.Run()
 }
