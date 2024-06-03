@@ -11,15 +11,5 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  localstack:
-    image: localstack/localstack
-    ports:
-      - "4566:4566"
-    environment:
-      - SERVICES=sqs
-      - DEBUG=1
-    volumes:
-      - "./localstack:/etc/localstack"
-
 volumes:
   postgres_data:

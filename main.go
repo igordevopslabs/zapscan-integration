@@ -3,9 +3,9 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/igordevopslabs/zapscan-integration/config"
+	"github.com/igordevopslabs/zapscan-integration/controllers"
 	docs "github.com/igordevopslabs/zapscan-integration/docs"
 	"github.com/igordevopslabs/zapscan-integration/migrations"
-	"github.com/igordevopslabs/zapscan-integration/services"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -19,7 +19,7 @@ func init() {
 // @title API ZapScan Integration
 // @version 1.0
 // @description A simple REST API to integration a ZAProxy vulnerability scans
-// @host localhost:3000
+// @host localhost:9000
 // @BasePath /
 // @SecurityDefinitions BasicAuth
 // @in header
@@ -30,8 +30,12 @@ func main() {
 	//Documentation
 	docs.SwaggerInfo.BasePath = "/"
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
-
-	go services.StartSQSConsumer()
+	r.POST("/create", controllers.CreateSite)
+	r.POST("/start", controllers.StartScan)
+	r.GET("/alist", controllers.ListAllActiveScans)
+	r.GET("/status/:scanId", controllers.GetScanStatus)
+	r.GET("/list", controllers.ListScans)
+	r.GET("/results/:scanId", controllers.GetScanResult)
 
 	r.Run()
 }

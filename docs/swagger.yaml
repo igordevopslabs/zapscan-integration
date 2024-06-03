@@ -1,5 +1,5 @@
 basePath: /
-host: localhost:3000
+host: localhost:9000
 info:
   contact: {}
   description: A simple REST API to integration a ZAProxy vulnerability scans
