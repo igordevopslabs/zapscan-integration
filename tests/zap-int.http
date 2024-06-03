@@ -10,11 +10,11 @@ GET {{baseUrl}}/alist HTTP/1.1
 ###
 
 # @name status
-GET {{baseUrl}}/status/8 HTTP/1.1
+GET {{baseUrl}}/status/9 HTTP/1.1
 ###
 
 # @name results
-GET {{baseUrl}}/results/8 HTTP/1.1
+GET {{baseUrl}}/results/9 HTTP/1.1
 ###
 
 # @name createScanIntree
