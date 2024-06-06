@@ -10,8 +10,8 @@ import (
 	"os"
 
 	"github.com/igordevopslabs/zapscan-integration/config"
-	"github.com/igordevopslabs/zapscan-integration/models"
-	"github.com/igordevopslabs/zapscan-integration/repository"
+	"github.com/igordevopslabs/zapscan-integration/internal/models"
+	"github.com/igordevopslabs/zapscan-integration/internal/repository"
 )
 
 type ActiveScan struct {

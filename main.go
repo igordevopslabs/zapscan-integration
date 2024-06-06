@@ -3,9 +3,8 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/igordevopslabs/zapscan-integration/config"
-	"github.com/igordevopslabs/zapscan-integration/controllers"
 	docs "github.com/igordevopslabs/zapscan-integration/docs"
-	"github.com/igordevopslabs/zapscan-integration/migrations"
+	"github.com/igordevopslabs/zapscan-integration/internal/controllers"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -13,7 +12,7 @@ import (
 func init() {
 	config.LoadEnvs()
 	config.ConnectToDB()
-	migrations.SyncDatabase()
+	config.SyncDatabase()
 }
 
 // @title API ZapScan Integration
@@ -28,7 +27,7 @@ func main() {
 	r := gin.Default()
 
 	//Documentation
-	docs.SwaggerInfo.BasePath = "/"
+	docs.SwaggerInfo.BasePath = "./"
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	r.POST("/create", controllers.CreateSite)
 	r.POST("/start", controllers.StartScan)

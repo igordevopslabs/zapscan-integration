@@ -5,5 +5,117 @@ info:
   description: A simple REST API to integration a ZAProxy vulnerability scans
   title: API ZapScan Integration
   version: "1.0"
-paths: {}
+paths:
+  /alist:
+    get:
+      consumes:
+      - application/json
+      description: List All Active existing actives scansIds
+      operationId: list-all-ascans
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+      summary: List all active scans
+      tags:
+      - get-scans
+  /create:
+    post:
+      consumes:
+      - application/json
+      description: Create Site for new scan
+      operationId: create-scan
+      parameters:
+      - description: Authorization header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+      security:
+      - BasicAuth: []
+      summary: Create Site
+      tags:
+      - create-scans
+  /list:
+    get:
+      consumes:
+      - application/json
+      description: List All existing scansIds
+      operationId: list-all
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+      summary: List all scans
+      tags:
+      - get-scans
+  /results/:scanId:
+    get:
+      consumes:
+      - application/json
+      description: Show scan results by scanId
+      operationId: show-results
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+      summary: Show results by scanId
+      tags:
+      - get-scans
+  /start:
+    post:
+      consumes:
+      - application/json
+      description: Start a new active scan
+      operationId: post-scans
+      parameters:
+      - description: Authorization header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+      security:
+      - BasicAuth: []
+      summary: Start Scan
+      tags:
+      - start-scans
+  /status/:scanId:
+    get:
+      consumes:
+      - application/json
+      description: Show scan status by scanId
+      operationId: show-status
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+      summary: Show scan status by scanId
+      tags:
+      - get-scans
 swagger: "2.0"
