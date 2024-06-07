@@ -3,6 +3,7 @@ package controllers
 import (
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/igordevopslabs/zapscan-integration/internal/services"
@@ -38,12 +39,16 @@ func CreateSite(c *gin.Context) {
 		return
 	}
 
-	err := services.CreateSite(req.URLs)
+	scanIDs, err := services.CreateSite(req.URLs)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message": "Sites added to scan tree"})
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Sites added to scan tree",
+		"site":    req.URLs,
+		"site_id": scanIDs,
+	})
 }
 
 // @Summary     Start Scan
@@ -63,12 +68,37 @@ func StartScan(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	go func() {
-		if err := services.StartScan(req.URLs); err != nil {
-			log.Printf("Error starting scan: %v", err)
-		}
-	}()
-	c.JSON(http.StatusOK, gin.H{"message": "Scan started"})
+
+	scanIDs, err := services.StartScan(req.URLs)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Iniciar goroutine para processar a conclusão dos scans
+	for i, scanID := range scanIDs {
+		url := req.URLs[i]
+		go func(url, scanID string) {
+			// Aguardar até que o scan esteja concluído
+			for {
+				completed, err := services.CheckScanCompletion(scanID)
+				if err != nil {
+					log.Printf("Error checking scan status: %v", err)
+					return
+				}
+				if completed {
+					break
+				}
+				time.Sleep(10 * time.Second) // Aguarde um intervalo antes de verificar novamente
+			}
+		}(url, scanID)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message":  "New scan started for site.",
+		"site":     req.URLs,
+		"scan_ids": scanIDs,
+	})
 }
 
 // @Summary     List all active scans

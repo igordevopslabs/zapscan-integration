@@ -44,38 +44,24 @@ func init() {
 	zapEndpoint = os.Getenv("ZAP_EDP")
 }
 
-func CreateSite(urls []string) error {
+func CreateSite(urls []string) ([]string, error) {
 
+	scanIDs := []string{}
+
+	//valida a existencia das variaveis de ambiente
 	if zapApiKey == "" {
-		return errors.New("ZAP_KEY environment variable is not set")
+		return nil, errors.New("ZAP_KEY environment variable is not set")
 	}
 	if zapEndpoint == "" {
-		return errors.New("ZAP_EDP environment variable is not set")
+		return nil, errors.New("ZAP_EDP environment variable is not set")
 	}
 
+	//itera em cima da req do user sobre os site urls passados
 	for _, url := range urls {
 		zapUrl := fmt.Sprintf("%s/JSON/spider/action/scan/?apikey=%s&url=%s", zapEndpoint, zapApiKey, url)
 		resp, err := http.Get(zapUrl)
 		if err != nil || resp.StatusCode != http.StatusOK {
-			return errors.New("failed to add site to scan tree")
-		}
-	}
-	return nil
-}
-
-func StartScan(urls []string) error {
-	if zapApiKey == "" {
-		return errors.New("ZAP_KEY environment variable is not set")
-	}
-	if zapEndpoint == "" {
-		return errors.New("ZAP_EDP environment variable is not set")
-	}
-	for _, url := range urls {
-		zapUrl := fmt.Sprintf("%s/JSON/ascan/action/scan/?apikey=%s&url=%s", zapEndpoint, zapApiKey, url)
-
-		resp, err := http.Get(zapUrl)
-		if err != nil || resp.StatusCode != http.StatusOK {
-			return errors.New("failed to start scan")
+			return nil, errors.New("failed to add site to scan tree")
 		}
 
 		defer resp.Body.Close()
@@ -83,23 +69,63 @@ func StartScan(urls []string) error {
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			log.Printf("Failed to read response body: %v", err)
-			return errors.New("failed to start scan")
+			return nil, errors.New("failed to read response body")
+		}
+
+		//variavel para receber o scanID da APi do zaproxy
+		var scanResponse ScanResponse
+		if err := json.Unmarshal(body, &scanResponse); err != nil {
+			log.Printf("Failed to parse response JSON: %v", err)
+			return nil, errors.New("failed to parse response JSON")
+		}
+
+		scanIDs = append(scanIDs, scanResponse.Scan)
+	}
+	return scanIDs, nil
+}
+
+func StartScan(urls []string) ([]string, error) {
+
+	scanIDs := []string{}
+
+	if zapApiKey == "" {
+		return nil, errors.New("ZAP_KEY environment variable is not set")
+	}
+	if zapEndpoint == "" {
+		return nil, errors.New("ZAP_EDP environment variable is not set")
+	}
+	for _, url := range urls {
+		zapUrl := fmt.Sprintf("%s/JSON/ascan/action/scan/?apikey=%s&url=%s", zapEndpoint, zapApiKey, url)
+
+		resp, err := http.Get(zapUrl)
+		if err != nil || resp.StatusCode != http.StatusOK {
+			return nil, errors.New("failed to start scan")
+		}
+
+		defer resp.Body.Close()
+
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			log.Printf("Failed to read response body: %v", err)
+			return nil, errors.New("failed to start scan")
 		}
 
 		var scanResponse ScanResponse
 		if err := json.Unmarshal(body, &scanResponse); err != nil {
 			log.Printf("Failed to parse response JSON: %v", err)
-			return errors.New("failed to start scan")
+			return nil, errors.New("failed to start scan")
 		}
 
 		fmt.Println("ZAP API response: Scan ID =", scanResponse.Scan)
 
 		if resp.StatusCode != http.StatusOK {
 			log.Printf("Non-OK HTTP status: %s", resp.Status)
-			return errors.New("failed to start scan")
+			return nil, errors.New("failed to start scan")
 		}
+
+		scanIDs = append(scanIDs, scanResponse.Scan)
 	}
-	return nil
+	return scanIDs, nil
 }
 
 func ListActiveScans() ([]ActiveScan, error) {
@@ -203,10 +229,6 @@ func GetScanResult(scanId string) (models.Scan, error) {
 		return models.Scan{}, errors.New("failed to get scan status from ZAP API")
 	}
 	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return models.Scan{}, fmt.Errorf("non-OK HTTP status: %s", resp.Status)
-	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
