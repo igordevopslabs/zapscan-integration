@@ -1,6 +1,5 @@
 @baseUrl = http://localhost:9000
 
-
 # @name allscans
 GET {{baseUrl}}/list HTTP/1.1
 ###
@@ -9,30 +8,31 @@ GET {{baseUrl}}/list HTTP/1.1
 GET {{baseUrl}}/alist HTTP/1.1
 ###
 
-# @name status
-GET {{baseUrl}}/status/9 HTTP/1.1
-###
-
-# @name results
-GET {{baseUrl}}/results/9 HTTP/1.1
-###
-
 # @name createScanIntree
 POST  {{baseUrl}}/create
 Content-Type: application/json
+Authorization: Basic YWRtaW46cGFzc3dvcmQ=
 
 {
     "urls": ["http://juice-shop:3000"]
 }
-
-
 ###
 
 # @name startScan
 POST  {{baseUrl}}/start
 Content-Type: application/json
+Authorization: Basic YWRtaW46cGFzc3dvcmQ=
 
 {
     "urls": ["http://juice-shop:3000"]
 }
+###
+
+# @name status
+GET {{baseUrl}}/status/0 HTTP/1.1
+###
+
+# @name results
+GET {{baseUrl}}/results/0 HTTP/1.1
+Authorization: Basic YWRtaW46cGFzc3dvcmQ=
 ###
