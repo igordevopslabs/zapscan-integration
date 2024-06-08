@@ -80,24 +80,6 @@ func StartScan(c *gin.Context) {
 	})
 }
 
-// @Summary     List all active scans
-// @Description List All Active existing actives scansIds
-// @ID          list-all-ascans
-// @Tags  	    get-scans
-// @Accept      json
-// @Produce     json
-// @Success     200
-// @Failure     500
-// @Router      /alist [get]
-func ListAllActiveScans(c *gin.Context) {
-	scans, err := services.ListActiveScans()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"scans": scans})
-}
-
 // @Summary     Show scan status by scanId
 // @Description Show scan status by scanId
 // @ID          show-status

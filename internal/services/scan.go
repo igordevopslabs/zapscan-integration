@@ -18,10 +18,6 @@ type ActiveScan struct {
 	ID string `json:"id"`
 }
 
-type ActiveScansResponse struct {
-	Scans []ActiveScan `json:"scans"`
-}
-
 type ScanResponse struct {
 	Scan string `json:"scan"`
 }
@@ -126,33 +122,6 @@ func StartScan(urls []string) ([]string, error) {
 		scanIDs = append(scanIDs, scanResponse.Scan)
 	}
 	return scanIDs, nil
-}
-
-func ListActiveScans() ([]ActiveScan, error) {
-	zapUrl := fmt.Sprintf("%s/JSON/ascan/view/scans/?apikey=%s", zapEndpoint, zapApiKey)
-	resp, err := http.Get(zapUrl)
-	if err != nil {
-		return nil, errors.New("failed to get active scans from ZAP API")
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("non-OK HTTP status: %s", resp.Status)
-	}
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, errors.New("failed to read response body")
-	}
-
-	var activeScansResponse ActiveScansResponse
-	if err := json.Unmarshal(body, &activeScansResponse); err != nil {
-		return nil, errors.New("failed to parse response JSON")
-	}
-
-	log.Printf("Active scans: %v", activeScansResponse.Scans)
-
-	return activeScansResponse.Scans, nil
 }
 
 func CheckScanStatus(scanId string) (string, error) {
