@@ -270,9 +270,8 @@ func GetScanResult(scanId string) (models.Scan, error) {
 	// Salvar a URL, Scan ID e resultados no banco de dados
 
 	scan := models.Scan{
-		ScanID: scanId,
-		Status: "completed",
-
+		ScanID:  scanId,
+		Status:  "completed",
 		Results: string(body),
 	}
 
