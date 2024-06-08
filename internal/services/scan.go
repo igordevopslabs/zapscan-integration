@@ -216,13 +216,8 @@ func ListScans() ([]models.Scan, error) {
 }
 
 func GetScanResult(scanId string) (models.Scan, error) {
-	// Verificar se o scan já existe no banco de dados
-	existingScan, err := repository.GetScanByScanID(scanId)
-	if err == nil && existingScan != nil {
-		return *existingScan, nil
-	}
-
 	// Verificar o status do scan
+
 	zapUrl := fmt.Sprintf("%s/JSON/ascan/view/status/?apikey=%s&scanId=%s", zapEndpoint, zapApiKey, scanId)
 	resp, err := http.Get(zapUrl)
 	if err != nil {
@@ -242,6 +237,12 @@ func GetScanResult(scanId string) (models.Scan, error) {
 
 	if status, ok := statusResponse["status"]; ok && status.(string) != "100" {
 		return models.Scan{}, errors.New("scan not completed")
+	}
+
+	// Verificar se o scan já existe no banco de dados
+	existingScan, err := repository.GetScanByScanID(scanId)
+	if err == nil && existingScan != nil {
+		return *existingScan, nil
 	}
 
 	// Obter os resultados do scan
@@ -267,9 +268,11 @@ func GetScanResult(scanId string) (models.Scan, error) {
 	}
 
 	// Salvar a URL, Scan ID e resultados no banco de dados
+
 	scan := models.Scan{
-		ScanID:  scanId,
-		Status:  "completed",
+		ScanID: scanId,
+		Status: "completed",
+
 		Results: string(body),
 	}
 

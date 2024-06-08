@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/igordevopslabs/zapscan-integration/internal/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -19,4 +20,6 @@ func ConnectToDB() {
 	if err != nil {
 		log.Fatal("Error to connect database")
 	}
+
+	DB.AutoMigrate(&models.Scan{})
 }

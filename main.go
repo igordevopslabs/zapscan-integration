@@ -13,7 +13,6 @@ import (
 func init() {
 	config.LoadEnvs()
 	config.ConnectToDB()
-	config.SyncDatabase()
 }
 
 // @title API ZapScan Integration

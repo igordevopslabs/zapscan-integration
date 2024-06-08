@@ -29,10 +29,10 @@ Authorization: Basic YWRtaW46cGFzc3dvcmQ=
 ###
 
 # @name status
-GET {{baseUrl}}/status/4 HTTP/1.1
+GET {{baseUrl}}/status/0 HTTP/1.1
 ###
 
 # @name results
-GET {{baseUrl}}/results/4 HTTP/1.1
+GET {{baseUrl}}/results/0 HTTP/1.1
 Authorization: Basic YWRtaW46cGFzc3dvcmQ=
 ###

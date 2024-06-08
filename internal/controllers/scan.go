@@ -1,9 +1,7 @@
 package controllers
 
 import (
-	"log"
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/igordevopslabs/zapscan-integration/internal/services"
@@ -73,25 +71,6 @@ func StartScan(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
-	}
-
-	// Iniciar goroutine para processar a conclusão dos scans
-	for i, scanID := range scanIDs {
-		url := req.URLs[i]
-		go func(url, scanID string) {
-			// Aguardar até que o scan esteja concluído
-			for {
-				completed, err := services.CheckScanCompletion(scanID)
-				if err != nil {
-					log.Printf("Error checking scan status: %v", err)
-					return
-				}
-				if completed {
-					break
-				}
-				time.Sleep(10 * time.Second) // Aguarde um intervalo antes de verificar novamente
-			}
-		}(url, scanID)
 	}
 
 	c.JSON(http.StatusOK, gin.H{
@@ -170,7 +149,10 @@ func GetScanResult(c *gin.Context) {
 	result, err := services.GetScanResult(scanId)
 	if err != nil {
 		if err.Error() == "scan not completed" {
-			c.JSON(http.StatusOK, gin.H{"message": "Scan not completed yet"})
+			c.JSON(http.StatusOK, gin.H{
+				"message": "Scan still in progress",
+				"ScanID":  scanId,
+			})
 			return
 		}
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
