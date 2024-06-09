@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -61,7 +61,7 @@ func CreateSite(urls []string) ([]string, error) {
 		defer resp.Body.Close()
 
 		//recebe o corpo da requisição a parir da resposta
-		body, err := ioutil.ReadAll(resp.Body)
+		body, err := io.ReadAll(resp.Body)
 		if err != nil {
 			log.Printf("Failed to read response body: %v", err)
 			return nil, errors.New("failed to read response body")
@@ -100,7 +100,7 @@ func StartScan(urls []string) ([]string, error) {
 
 		defer resp.Body.Close()
 
-		body, err := ioutil.ReadAll(resp.Body)
+		body, err := io.ReadAll(resp.Body)
 		if err != nil {
 			logger.LogError("Failed to read body", err)
 			return nil, errors.New("failed to start scan")
@@ -139,20 +139,24 @@ func GetScanResult(scanId string) (models.Scan, error) {
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	//nova variavel para receber o body
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return scan, errors.New("failed to read response body")
 	}
 
+	//passa os dados do body para a variavel statusResponse
 	var statusResponse map[string]interface{}
 	if err := json.Unmarshal(body, &statusResponse); err != nil {
 		return scan, errors.New("failed to parse response JSON")
 	}
 
+	//converte status para string para facilitar a manipulção
 	status, ok := statusResponse["status"].(string)
 	if !ok {
 		return scan, errors.New("status not found or is not a string in response")
 	}
+
 	//atribui status no campo status no banco
 	scan.Status = status
 
@@ -173,7 +177,7 @@ func GetScanResult(scanId string) (models.Scan, error) {
 		return scan, fmt.Errorf("non-OK HTTP status: %s", resp.Status)
 	}
 
-	body, err = ioutil.ReadAll(resp.Body)
+	body, err = io.ReadAll(resp.Body)
 	if err != nil {
 		return scan, errors.New("failed to read response body")
 	}
