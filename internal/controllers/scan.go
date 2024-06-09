@@ -9,6 +9,8 @@ import (
 	"go.uber.org/zap"
 )
 
+//Definição das structs para receber os parametros
+
 // struct para receber os inputs de create scan (spidering tree)
 type CreateSiteRequest struct {
 	URLs []string `json:"urls" binding:"required"`
