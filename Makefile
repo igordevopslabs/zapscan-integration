@@ -2,4 +2,12 @@
 
 run:
 	@echo "Iniciando a aplicação..."
-	CompileDaemon -command="./zapscan-integration" -color=true;
+	docker-compose up -d
+
+build:
+	@echo "Building app"
+	docker build -t zap-int:v0 .
+
+docs:
+	@echo "Updating swagger"
+	swag init
