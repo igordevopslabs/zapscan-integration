@@ -185,68 +185,70 @@ func ListScans() ([]models.Scan, error) {
 }
 
 func GetScanResult(scanId string) (models.Scan, error) {
-	// Verificar o status do scan
+	//atribui scanID no campo ScanID no banco
+	scan := models.Scan{ScanID: scanId}
 
+	// Verificar o status do scan
 	zapUrl := fmt.Sprintf("%s/JSON/ascan/view/status/?apikey=%s&scanId=%s", zapEndpoint, zapApiKey, scanId)
 	resp, err := http.Get(zapUrl)
 	if err != nil {
-		return models.Scan{}, errors.New("failed to get scan status from ZAP API")
+		return scan, errors.New("failed to get scan status from ZAP API")
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return models.Scan{}, errors.New("failed to read response body")
+		return scan, errors.New("failed to read response body")
 	}
 
 	var statusResponse map[string]interface{}
 	if err := json.Unmarshal(body, &statusResponse); err != nil {
-		return models.Scan{}, errors.New("failed to parse response JSON")
+		return scan, errors.New("failed to parse response JSON")
 	}
 
-	if status, ok := statusResponse["status"]; ok && status.(string) != "100" {
-		return models.Scan{}, errors.New("scan not completed")
+	status, ok := statusResponse["status"].(string)
+	if !ok {
+		return scan, errors.New("status not found or is not a string in response")
 	}
+	//atribui status no campo status no banco
+	scan.Status = status
 
-	// Verificar se o scan já existe no banco de dados
-	existingScan, err := repository.GetScanByScanID(scanId)
-	if err == nil && existingScan != nil {
-		return *existingScan, nil
+	// Verificação de status simplificada
+	if status != "100" {
+		return scan, errors.New("scan not completed")
 	}
 
 	// Obter os resultados do scan
 	zapUrl = fmt.Sprintf("%s/JSON/ascan/view/scanProgress/?apikey=%s&scanId=%s", zapEndpoint, zapApiKey, scanId)
 	resp, err = http.Get(zapUrl)
 	if err != nil {
-		return models.Scan{}, errors.New("failed to get scan result from ZAP API")
+		return scan, errors.New("failed to get scan result from ZAP API")
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return models.Scan{}, fmt.Errorf("non-OK HTTP status: %s", resp.Status)
+		return scan, fmt.Errorf("non-OK HTTP status: %s", resp.Status)
 	}
 
 	body, err = ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return models.Scan{}, errors.New("failed to read response body")
+		return scan, errors.New("failed to read response body")
 	}
 
 	var scanResult ScanResult
 	if err := json.Unmarshal(body, &scanResult); err != nil {
-		return models.Scan{}, errors.New("failed to parse response JSON")
+		return scan, errors.New("failed to parse response JSON")
 	}
 
 	// Salvar a URL, Scan ID e resultados no banco de dados
+	scan.Results = string(body)
 
-	scan := models.Scan{
-		ScanID:  scanId,
-		Status:  "completed",
-		Results: string(body),
-	}
+	// Verificar se o scan já existe no banco de dados
+	existingScan, _ := repository.GetScanByScanID(scanId)
 
 	// Se o scan já existe, atualizar o registro existente
 	if existingScan != nil {
-		existingScan.Status = "completed"
+		existingScan.Status = "100"
 		existingScan.Results = string(body)
 		if err := repository.UpdateScan(existingScan); err != nil {
 			return scan, errors.New("failed to update scan in database")

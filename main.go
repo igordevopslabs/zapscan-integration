@@ -31,7 +31,6 @@ func main() {
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	r.POST("/create", middleware.BasicAuth(), controllers.CreateSite)
 	r.POST("/start", middleware.BasicAuth(), controllers.StartScan)
-	r.GET("/status/:scanId", controllers.GetScanStatus)
 	r.GET("/list", controllers.ListScans)
 	r.GET("/results/:scanId", middleware.BasicAuth(), controllers.GetScanResult)
 
