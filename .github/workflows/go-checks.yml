@@ -2,7 +2,7 @@
     name: Golang Scans
     
     on:
-      pull_request:
+      push:
         paths:
           - "**.go"
           - "go.mod"

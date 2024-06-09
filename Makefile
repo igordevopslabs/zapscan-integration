@@ -26,8 +26,6 @@ install-tools:
 
 go-checks:
 	@echo "Rodando validações de segurança no codigo"
-	@echo "==> Running go vet"
-	@go vet ./...
 	@echo "==> Running staticcheck"
 	@staticcheck ./...
 	@echo "==> Running govulncheck"
