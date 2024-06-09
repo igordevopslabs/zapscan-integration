@@ -11,3 +11,24 @@ build:
 docs:
 	@echo "Updating swagger"
 	swag init
+
+install-tools: 
+	@echo "==> Installing gotest"
+	@go install github.com/rakyll/gotest@latest
+	@echo "==> Installing swaggo"
+	@go install github.com/swaggo/swag/cmd/swag@latest
+	@echo "==> Installing staticcheck"
+	@go install honnef.co/go/tools/cmd/staticcheck@latest
+	@echo "==> Installing govulncheck"
+	@go install golang.org/x/vuln/cmd/govulncheck@latest
+
+
+
+go-checks:
+	@echo "Rodando validações de segurança no codigo"
+	@echo "==> Running go vet"
+	@go vet ./...
+	@echo "==> Running staticcheck"
+	@staticcheck ./...
+	@echo "==> Running govulncheck"
+	@govulncheck ./...
