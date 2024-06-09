@@ -37,5 +37,5 @@
     
           - name: Run Linters
             run: |
-              go-checks
+              make go-checks
               git diff --exit-code
