@@ -2,10 +2,7 @@
 
 # @name allscans
 GET {{baseUrl}}/list HTTP/1.1
-###
-
-# @name activescans
-GET {{baseUrl}}/alist HTTP/1.1
+Authorization: Basic YWRtaW46cGFzc3dvcmQ=
 ###
 
 # @name createScanIntree
@@ -29,6 +26,6 @@ Authorization: Basic YWRtaW46cGFzc3dvcmQ=
 ###
 
 # @name results
-GET {{baseUrl}}/results/9 HTTP/1.1
+GET {{baseUrl}}/results/0 HTTP/1.1
 Authorization: Basic YWRtaW46cGFzc3dvcmQ=
 ###

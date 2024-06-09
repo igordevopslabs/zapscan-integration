@@ -32,7 +32,6 @@ var zapApiKey string
 var zapEndpoint string
 
 func init() {
-	config.LoadEnvs()
 	zapApiKey = os.Getenv("ZAP_KEY")
 	zapEndpoint = os.Getenv("ZAP_EDP")
 }

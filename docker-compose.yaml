@@ -35,5 +35,20 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  zapscan-integration:
+    image: docker.io/library/zap-int:v0  
+    environment:
+      - PORT=9000
+      - DB_URL=host=postgres user=admin password=MYsECRETf0Raccess dbname=zascans_db port=5432 sslmode=disable
+      - ZAP_KEY=fookey
+      - ZAP_EDP=http://zap:8090  
+      - BASIC_USER=admin
+      - BASIC_PASS=password
+    ports:
+      - "9000:9000"
+    depends_on:
+      - postgres
+      - zap
+
 volumes:
   postgres_data:

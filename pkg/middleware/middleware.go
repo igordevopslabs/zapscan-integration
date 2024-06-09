@@ -5,20 +5,15 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
-	"github.com/igordevopslabs/zapscan-integration/config"
 )
 
 var basicUser string
 var basicPass string
 
-func init() {
-	config.LoadEnvs()
-	basicUser = os.Getenv("BASIC_USER")
-	basicPass = os.Getenv("BASIC_PASS")
-}
-
 func BasicAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		basicUser = os.Getenv("BASIC_USER")
+		basicPass = os.Getenv("BASIC_PASS")
 		user, pass, hashAuth := c.Request.BasicAuth()
 		if hashAuth && user == basicUser && pass == basicPass {
 			c.Next()

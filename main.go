@@ -11,7 +11,6 @@ import (
 )
 
 func init() {
-	config.LoadEnvs()
 	config.ConnectToDB()
 }
 
