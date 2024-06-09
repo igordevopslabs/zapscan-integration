@@ -12,14 +12,11 @@ import (
 	"github.com/igordevopslabs/zapscan-integration/config"
 	"github.com/igordevopslabs/zapscan-integration/internal/models"
 	"github.com/igordevopslabs/zapscan-integration/internal/repository"
+	"go.uber.org/zap"
 )
 
-type ActiveScan struct {
-	ID string `json:"id"`
-}
-
 type ScanResponse struct {
-	Scan string `json:"scan"`
+	Scan string `json:"scan" `
 }
 
 type ScanResult struct {
@@ -41,6 +38,7 @@ func init() {
 }
 
 func CreateSite(urls []string) ([]string, error) {
+	config.LogInfo("service", zap.String("operation", "service.create_site"))
 
 	scanIDs := []string{}
 
@@ -81,7 +79,7 @@ func CreateSite(urls []string) ([]string, error) {
 }
 
 func StartScan(urls []string) ([]string, error) {
-
+	config.LogInfo("service", zap.String("operation", "service.start_scan"))
 	scanIDs := []string{}
 
 	if zapApiKey == "" {
@@ -90,6 +88,7 @@ func StartScan(urls []string) ([]string, error) {
 	if zapEndpoint == "" {
 		return nil, errors.New("ZAP_EDP environment variable is not set")
 	}
+
 	for _, url := range urls {
 		zapUrl := fmt.Sprintf("%s/JSON/ascan/action/scan/?apikey=%s&url=%s", zapEndpoint, zapApiKey, url)
 
@@ -124,67 +123,13 @@ func StartScan(urls []string) ([]string, error) {
 	return scanIDs, nil
 }
 
-func CheckScanStatus(scanId string) (string, error) {
-	zapUrl := fmt.Sprintf("%s/JSON/ascan/view/status/?apikey=%s&scanId=%s", zapEndpoint, zapApiKey, scanId)
-	resp, err := http.Get(zapUrl)
-	if err != nil {
-		return "", errors.New("failed to get scan status from ZAP API")
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("non-OK HTTP status: %s", resp.Status)
-	}
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return "", errors.New("failed to read response body")
-	}
-
-	var statusResponse map[string]interface{}
-	if err := json.Unmarshal(body, &statusResponse); err != nil {
-		return "", errors.New("failed to parse response JSON")
-	}
-
-	if status, ok := statusResponse["status"]; ok {
-		return status.(string), nil
-	}
-	return "", errors.New("status not found in response")
-}
-
-func CheckScanCompletion(scanId string) (bool, error) {
-	zapUrl := fmt.Sprintf("%s/JSON/ascan/view/status/?apikey=%s&scanId=%s", zapEndpoint, zapApiKey, scanId)
-	resp, err := http.Get(zapUrl)
-	if err != nil {
-		return false, errors.New("failed to get scan status from ZAP API")
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return false, fmt.Errorf("non-OK HTTP status: %s", resp.Status)
-	}
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return false, errors.New("failed to read response body")
-	}
-
-	var statusResponse map[string]interface{}
-	if err := json.Unmarshal(body, &statusResponse); err != nil {
-		return false, errors.New("failed to parse response JSON")
-	}
-
-	if status, ok := statusResponse["status"]; ok {
-		return status.(string) == "100", nil
-	}
-	return false, errors.New("status not found in response")
-}
-
 func ListScans() ([]models.Scan, error) {
+	config.LogInfo("service", zap.String("operation", "service.list_scans"))
 	return repository.GetAllScans()
 }
 
 func GetScanResult(scanId string) (models.Scan, error) {
+	config.LogInfo("service", zap.String("operation", "service.get_scan_result"))
 	//atribui scanID no campo ScanID no banco
 	scan := models.Scan{ScanID: scanId}
 

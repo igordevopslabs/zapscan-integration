@@ -1,4 +1,24 @@
 basePath: /
+definitions:
+  controllers.CreateSiteRequest:
+    properties:
+      urls:
+        items:
+          type: string
+        type: array
+    type: object
+  controllers.StartScanRequest:
+    properties:
+      urls:
+        items:
+          type: string
+        type: array
+    type: object
+  services.ScanResponse:
+    properties:
+      scan:
+        type: string
+    type: object
 host: localhost:9000
 info:
   contact: {}
@@ -6,22 +26,6 @@ info:
   title: API ZapScan Integration
   version: "1.0"
 paths:
-  /alist:
-    get:
-      consumes:
-      - application/json
-      description: List All Active existing actives scansIds
-      operationId: list-all-ascans
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-        "500":
-          description: Internal Server Error
-      summary: List all active scans
-      tags:
-      - get-scans
   /create:
     post:
       consumes:
@@ -29,6 +33,12 @@ paths:
       description: Create Site for new scan
       operationId: create-scan
       parameters:
+      - description: query params
+        in: body
+        name: urls
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.CreateSiteRequest'
       - description: Authorization header
         in: header
         name: Authorization
@@ -39,6 +49,8 @@ paths:
       responses:
         "200":
           description: OK
+          schema:
+            $ref: '#/definitions/services.ScanResponse'
         "500":
           description: Internal Server Error
       security:
@@ -52,38 +64,6 @@ paths:
       - application/json
       description: List All existing scansIds
       operationId: list-all
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-        "500":
-          description: Internal Server Error
-      summary: List all scans
-      tags:
-      - get-scans
-  /results/:scanId:
-    get:
-      consumes:
-      - application/json
-      description: Show scan results by scanId
-      operationId: show-results
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-        "500":
-          description: Internal Server Error
-      summary: Show results by scanId
-      tags:
-      - get-scans
-  /start:
-    post:
-      consumes:
-      - application/json
-      description: Start a new active scan
-      operationId: post-scans
       parameters:
       - description: Authorization header
         in: header
@@ -99,15 +79,26 @@ paths:
           description: Internal Server Error
       security:
       - BasicAuth: []
-      summary: Start Scan
+      summary: List all scans
       tags:
-      - start-scans
-  /status/:scanId:
+      - get-scans
+  /results/:scanId:
     get:
       consumes:
       - application/json
-      description: Show scan status by scanId
-      operationId: show-status
+      description: Show scan results by scanId
+      operationId: show-results
+      parameters:
+      - description: Scan ID
+        in: path
+        name: scanId
+        required: true
+        type: string
+      - description: Authorization header
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -115,7 +106,41 @@ paths:
           description: OK
         "500":
           description: Internal Server Error
-      summary: Show scan status by scanId
+      security:
+      - BasicAuth: []
+      summary: Show results by scanId
       tags:
       - get-scans
+  /start:
+    post:
+      consumes:
+      - application/json
+      description: Start a new active scan
+      operationId: post-scans
+      parameters:
+      - description: query params
+        in: body
+        name: urls
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.StartScanRequest'
+      - description: Authorization header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/services.ScanResponse'
+        "500":
+          description: Internal Server Error
+      security:
+      - BasicAuth: []
+      summary: Start Scan
+      tags:
+      - start-scans
 swagger: "2.0"

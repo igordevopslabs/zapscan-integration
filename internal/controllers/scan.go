@@ -4,19 +4,21 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/igordevopslabs/zapscan-integration/config"
 	"github.com/igordevopslabs/zapscan-integration/internal/services"
+	"go.uber.org/zap"
 )
 
 //Definição das structs para receber os parametros
 
 // struct para receber os inputs de create scan (spidering tree)
 type CreateSiteRequest struct {
-	URLs []string `json:"urls"`
+	URLs []string `json:"urls" binding:"required"`
 }
 
 // struct para receber os intputs de start scan (active scan)
 type StartScanRequest struct {
-	URLs []string `json:"urls"`
+	URLs []string `json:"urls" binding:"required"`
 }
 
 // @Summary     Create Site
@@ -25,12 +27,14 @@ type StartScanRequest struct {
 // @Tags  	    create-scans
 // @Accept      json
 // @Produce     json
+// @Param       urls body CreateSiteRequest true "query params"
 // @Param       Authorization header string true "Authorization header"
 // @Security    BasicAuth
-// @Success     200
+// @Success     200 {object} services.ScanResponse
 // @Failure     500
 // @Router      /create [post]
 func CreateSite(c *gin.Context) {
+	config.LogInfo("controller", zap.String("operation", "controller.create_site"))
 	var req CreateSiteRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -55,12 +59,14 @@ func CreateSite(c *gin.Context) {
 // @Tags  	    start-scans
 // @Accept      json
 // @Produce     json
+// @Param       urls body StartScanRequest true "query params"
 // @Param       Authorization header string true "Authorization header"
 // @Security    BasicAuth
-// @Success     200
+// @Success     200 {object} services.ScanResponse
 // @Failure     500
 // @Router      /start [post]
 func StartScan(c *gin.Context) {
+	config.LogInfo("controller", zap.String("operation", "controller.start_scan"))
 	var req StartScanRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -86,10 +92,13 @@ func StartScan(c *gin.Context) {
 // @Tags  	    get-scans
 // @Accept      json
 // @Produce     json
+// @Param       Authorization header string true "Authorization header"
+// @Security    BasicAuth
 // @Success     200
 // @Failure     500
 // @Router      /list [get]
 func ListScans(c *gin.Context) {
+	config.LogInfo("controller", zap.String("operation", "controller.list_scans"))
 	scans, err := services.ListScans()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -104,10 +113,14 @@ func ListScans(c *gin.Context) {
 // @Tags  	    get-scans
 // @Accept      json
 // @Produce     json
+// @Param       scanId path string true "Scan ID"
+// @Param       Authorization header string true "Authorization header"
+// @Security    BasicAuth
 // @Success     200
 // @Failure     500
 // @Router      /results/:scanId [get]
 func GetScanResult(c *gin.Context) {
+	config.LogInfo("controller", zap.String("operation", "controller.get_scan_result"))
 	scanId := c.Param("scanId")
 	result, err := services.GetScanResult(scanId)
 	if err != nil {

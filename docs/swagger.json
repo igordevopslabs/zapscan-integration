@@ -9,30 +9,6 @@
     "host": "localhost:9000",
     "basePath": "/",
     "paths": {
-        "/alist": {
-            "get": {
-                "description": "List All Active existing actives scansIds",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "get-scans"
-                ],
-                "summary": "List all active scans",
-                "operationId": "list-all-ascans",
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
-        },
         "/create": {
             "post": {
                 "security": [
@@ -54,6 +30,56 @@
                 "operationId": "create-scan",
                 "parameters": [
                     {
+                        "description": "query params",
+                        "name": "urls",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.CreateSiteRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization header",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/services.ScanResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/list": {
+            "get": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
+                "description": "List All existing scansIds",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "get-scans"
+                ],
+                "summary": "List all scans",
+                "operationId": "list-all",
+                "parameters": [
+                    {
                         "type": "string",
                         "description": "Authorization header",
                         "name": "Authorization",
@@ -71,32 +97,13 @@
                 }
             }
         },
-        "/list": {
-            "get": {
-                "description": "List All existing scansIds",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "get-scans"
-                ],
-                "summary": "List all scans",
-                "operationId": "list-all",
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
-        },
         "/results/:scanId": {
             "get": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
                 "description": "Show scan results by scanId",
                 "consumes": [
                     "application/json"
@@ -109,6 +116,22 @@
                 ],
                 "summary": "Show results by scanId",
                 "operationId": "show-results",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Scan ID",
+                        "name": "scanId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization header",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK"
@@ -140,6 +163,15 @@
                 "operationId": "post-scans",
                 "parameters": [
                     {
+                        "description": "query params",
+                        "name": "urls",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.StartScanRequest"
+                        }
+                    },
+                    {
                         "type": "string",
                         "description": "Authorization header",
                         "name": "Authorization",
@@ -149,35 +181,46 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/services.ScanResponse"
+                        }
                     },
                     "500": {
                         "description": "Internal Server Error"
                     }
                 }
             }
-        },
-        "/status/:scanId": {
-            "get": {
-                "description": "Show scan status by scanId",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "get-scans"
-                ],
-                "summary": "Show scan status by scanId",
-                "operationId": "show-status",
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
+        }
+    },
+    "definitions": {
+        "controllers.CreateSiteRequest": {
+            "type": "object",
+            "properties": {
+                "urls": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
                     }
+                }
+            }
+        },
+        "controllers.StartScanRequest": {
+            "type": "object",
+            "properties": {
+                "urls": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "services.ScanResponse": {
+            "type": "object",
+            "properties": {
+                "scan": {
+                    "type": "string"
                 }
             }
         }
