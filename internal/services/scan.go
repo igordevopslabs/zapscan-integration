@@ -60,13 +60,14 @@ func CreateSite(urls []string) ([]string, error) {
 
 		defer resp.Body.Close()
 
+		//recebe o corpo da requisição a parir da resposta
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			log.Printf("Failed to read response body: %v", err)
 			return nil, errors.New("failed to read response body")
 		}
 
-		//variavel para receber o scanID da APi do zaproxy
+		//pega os dados a partir do body e joga na variavel scanResponse
 		var scanResponse ScanResponse
 		if err := json.Unmarshal(body, &scanResponse); err != nil {
 			log.Printf("Failed to parse response JSON: %v", err)
@@ -101,20 +102,17 @@ func StartScan(urls []string) ([]string, error) {
 
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
-			log.Printf("Failed to read response body: %v", err)
+			logger.LogError("Failed to read body", err)
 			return nil, errors.New("failed to start scan")
 		}
 
 		var scanResponse ScanResponse
 		if err := json.Unmarshal(body, &scanResponse); err != nil {
-			log.Printf("Failed to parse response JSON: %v", err)
+			logger.LogError("Failed to parse JSON", err)
 			return nil, errors.New("failed to start scan")
 		}
-
-		fmt.Println("ZAP API response: Scan ID =", scanResponse.Scan)
-
 		if resp.StatusCode != http.StatusOK {
-			log.Printf("Non-OK HTTP status: %s", resp.Status)
+			logger.LogInfo("Problem", zap.String("http_status", resp.Status))
 			return nil, errors.New("failed to start scan")
 		}
 
