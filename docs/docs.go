@@ -30,10 +30,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "create-scans"
+                    "create-site"
                 ],
                 "summary": "Create Site",
-                "operationId": "create-scan",
+                "operationId": "create-site",
                 "parameters": [
                     {
                         "description": "query params",
@@ -202,6 +202,9 @@ const docTemplate = `{
     "definitions": {
         "controllers.CreateSiteRequest": {
             "type": "object",
+            "required": [
+                "urls"
+            ],
             "properties": {
                 "urls": {
                     "type": "array",
@@ -213,6 +216,9 @@ const docTemplate = `{
         },
         "controllers.StartScanRequest": {
             "type": "object",
+            "required": [
+                "urls"
+            ],
             "properties": {
                 "urls": {
                     "type": "array",

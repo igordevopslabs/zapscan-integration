@@ -24,10 +24,10 @@
                     "application/json"
                 ],
                 "tags": [
-                    "create-scans"
+                    "create-site"
                 ],
                 "summary": "Create Site",
-                "operationId": "create-scan",
+                "operationId": "create-site",
                 "parameters": [
                     {
                         "description": "query params",
@@ -196,6 +196,9 @@
     "definitions": {
         "controllers.CreateSiteRequest": {
             "type": "object",
+            "required": [
+                "urls"
+            ],
             "properties": {
                 "urls": {
                     "type": "array",
@@ -207,6 +210,9 @@
         },
         "controllers.StartScanRequest": {
             "type": "object",
+            "required": [
+                "urls"
+            ],
             "properties": {
                 "urls": {
                     "type": "array",

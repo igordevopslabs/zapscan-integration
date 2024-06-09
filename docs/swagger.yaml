@@ -6,6 +6,8 @@ definitions:
         items:
           type: string
         type: array
+    required:
+    - urls
     type: object
   controllers.StartScanRequest:
     properties:
@@ -13,6 +15,8 @@ definitions:
         items:
           type: string
         type: array
+    required:
+    - urls
     type: object
   services.ScanResponse:
     properties:
@@ -31,7 +35,7 @@ paths:
       consumes:
       - application/json
       description: Create Site for new scan
-      operationId: create-scan
+      operationId: create-site
       parameters:
       - description: query params
         in: body
@@ -57,7 +61,7 @@ paths:
       - BasicAuth: []
       summary: Create Site
       tags:
-      - create-scans
+      - create-site
   /list:
     get:
       consumes:

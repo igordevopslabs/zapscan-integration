@@ -23,8 +23,8 @@ type StartScanRequest struct {
 
 // @Summary     Create Site
 // @Description Create Site for new scan
-// @ID          create-scan
-// @Tags  	    create-scans
+// @ID          create-site
+// @Tags  	    create-site
 // @Accept      json
 // @Produce     json
 // @Param       urls body CreateSiteRequest true "query params"
