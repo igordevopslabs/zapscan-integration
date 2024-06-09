@@ -9,7 +9,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/igordevopslabs/zapscan-integration/config"
+	"github.com/igordevopslabs/zapscan-integration/pkg/logger"
+
 	"github.com/igordevopslabs/zapscan-integration/internal/models"
 	"github.com/igordevopslabs/zapscan-integration/internal/repository"
 	"go.uber.org/zap"
@@ -37,7 +38,7 @@ func init() {
 }
 
 func CreateSite(urls []string) ([]string, error) {
-	config.LogInfo("service", zap.String("operation", "service.create_site"))
+	logger.LogInfo("service", zap.String("operation", "service.create_site"))
 
 	scanIDs := []string{}
 
@@ -78,7 +79,7 @@ func CreateSite(urls []string) ([]string, error) {
 }
 
 func StartScan(urls []string) ([]string, error) {
-	config.LogInfo("service", zap.String("operation", "service.start_scan"))
+	logger.LogInfo("service", zap.String("operation", "service.start_scan"))
 	scanIDs := []string{}
 
 	if zapApiKey == "" {
@@ -123,12 +124,12 @@ func StartScan(urls []string) ([]string, error) {
 }
 
 func ListScans() ([]models.Scan, error) {
-	config.LogInfo("service", zap.String("operation", "service.list_scans"))
+	logger.LogInfo("service", zap.String("operation", "service.list_scans"))
 	return repository.GetAllScans()
 }
 
 func GetScanResult(scanId string) (models.Scan, error) {
-	config.LogInfo("service", zap.String("operation", "service.get_scan_result"))
+	logger.LogInfo("service", zap.String("operation", "service.get_scan_result"))
 	//atribui scanID no campo ScanID no banco
 	scan := models.Scan{ScanID: scanId}
 

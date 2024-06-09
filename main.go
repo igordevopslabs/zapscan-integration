@@ -2,16 +2,16 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/igordevopslabs/zapscan-integration/config"
 	docs "github.com/igordevopslabs/zapscan-integration/docs"
 	"github.com/igordevopslabs/zapscan-integration/internal/controllers"
+	"github.com/igordevopslabs/zapscan-integration/pkg/database"
 	"github.com/igordevopslabs/zapscan-integration/pkg/middleware"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func init() {
-	config.ConnectToDB()
+	database.ConnectToDB()
 }
 
 // @title API ZapScan Integration
@@ -23,6 +23,7 @@ func init() {
 // @in header
 // @name Authorization
 func main() {
+
 	r := gin.Default()
 
 	//Documentation

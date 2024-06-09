@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/igordevopslabs/zapscan-integration/config"
 	"github.com/igordevopslabs/zapscan-integration/internal/services"
+	"github.com/igordevopslabs/zapscan-integration/pkg/logger"
 	"go.uber.org/zap"
 )
 
@@ -34,7 +34,7 @@ type StartScanRequest struct {
 // @Failure     500
 // @Router      /create [post]
 func CreateSite(c *gin.Context) {
-	config.LogInfo("controller", zap.String("operation", "controller.create_site"))
+	logger.LogInfo("controller", zap.String("operation", "controller.create_site"))
 	var req CreateSiteRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -66,7 +66,7 @@ func CreateSite(c *gin.Context) {
 // @Failure     500
 // @Router      /start [post]
 func StartScan(c *gin.Context) {
-	config.LogInfo("controller", zap.String("operation", "controller.start_scan"))
+	logger.LogInfo("controller", zap.String("operation", "controller.start_scan"))
 	var req StartScanRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -98,7 +98,7 @@ func StartScan(c *gin.Context) {
 // @Failure     500
 // @Router      /list [get]
 func ListScans(c *gin.Context) {
-	config.LogInfo("controller", zap.String("operation", "controller.list_scans"))
+	logger.LogInfo("controller", zap.String("operation", "controller.list_scans"))
 	scans, err := services.ListScans()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -120,7 +120,7 @@ func ListScans(c *gin.Context) {
 // @Failure     500
 // @Router      /results/:scanId [get]
 func GetScanResult(c *gin.Context) {
-	config.LogInfo("controller", zap.String("operation", "controller.get_scan_result"))
+	logger.LogInfo("controller", zap.String("operation", "controller.get_scan_result"))
 	scanId := c.Param("scanId")
 	result, err := services.GetScanResult(scanId)
 	if err != nil {
