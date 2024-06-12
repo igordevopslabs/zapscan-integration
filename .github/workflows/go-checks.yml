@@ -47,6 +47,9 @@
             run: |
               make build
 
+          - name: debug
+            run: docker network inspect bridge | grep Gateway | awk '{print $$2}' | tr -d '",'
+
           - name: Setup Stack
             run: |
                 make run
