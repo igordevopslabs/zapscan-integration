@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites tests="2" name="IntelliJ IDEA HTTP Client">
+  <testsuite tests="2" name="list" failures="0" errors="0" skip="0">
+    <testcase classname="http.ListAllExistingScans" name="Response" time="0.495" />
+    <testcase classname="http.ListAllExistingScans" name="Response Handler" time="0.0" />
+  </testsuite>
+</testsuites>
+

@@ -39,3 +39,22 @@
             run: |
               make go-checks
               git diff --exit-code
+
+          - name: Run Build 
+            run: |
+              make build
+
+          - name: Run Build 
+            run: |
+                make run
+                
+          - name: Run Build 
+            run: |
+                make end-to-end
+
+          
+
+
+
+
+            

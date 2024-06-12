@@ -1,3 +1,6 @@
+
+PATH_TO_TEST=tests/e2e
+
 .PHONY: run
 
 run:
@@ -30,3 +33,9 @@ go-checks:
 	@staticcheck ./...
 	@echo "==> Running govulncheck"
 	@govulncheck ./...
+
+end-to-end:
+	@echo "==> Running end-to-end tests"
+	@DOCKER_INTERNAL_IP=$$(docker network inspect bridge | grep Gateway | awk '{print $$2}' | tr -d '",') && \
+	docker run --network="host" --rm -i -t -v $(PWD)/$(PATH_TO_TEST):/workdir --add-host=host.docker.internal:$$DOCKER_INTERNAL_IP jetbrains/intellij-http-client -L VERBOSE -e end_to_end -v http.client.env.json -r -D list.http
+
