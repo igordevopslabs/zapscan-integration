@@ -36,4 +36,4 @@ go-checks:
 
 end-to-end:
 	@echo "==> Running end-to-end tests"
-	docker run --network="host" --rm -i -t -v $(PWD)/$(PATH_TO_TEST):/workdir --add-host=host.docker.internal:$(DOCKER_INTERNAL_IP) jetbrains/intellij-http-client -L VERBOSE -e end_to_end -v http.client.env.json -r -D list.http
+	docker run --network="host" --rm -v $(PWD)/$(PATH_TO_TEST):/workdir --add-host=host.docker.internal:$(DOCKER_INTERNAL_IP) jetbrains/intellij-http-client -L VERBOSE -e end_to_end -v http.client.env.json -r -D list.http
