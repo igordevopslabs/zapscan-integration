@@ -1,0 +1,32 @@
+###
+
+# @name ListAllExistingScans
+GET {{api_host}}/list HTTP/1.1
+Content-Type: application/json
+Authorization: {{ baisc_auth }}
+###
+
+# @name createScanIntree
+POST  {{api_host}}/create
+Content-Type: application/json
+Authorization: {{ baisc_auth }}
+
+{
+    "urls": ["http://juice-shop:3000"]
+}
+###
+
+# @name startScan
+POST  {{api_host}}/start
+Content-Type: application/json
+Authorization: {{ baisc_auth }}
+
+{
+    "urls": ["http://juice-shop:3000"]
+}
+###
+
+# @name results
+GET {{api_host}}/results/0 HTTP/1.1
+Authorization: {{ baisc_auth }}
+###

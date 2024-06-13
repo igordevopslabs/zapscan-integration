@@ -65,7 +65,7 @@ services:
       - "http.client.env.json"
       - "-r"
       - "-D"
-      - "list.http"
+      - "test.http"
 
 volumes:
   postgres_data:
