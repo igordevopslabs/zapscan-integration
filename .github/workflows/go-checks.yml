@@ -49,11 +49,8 @@
                 
           - name: Run Setup and Tests
             run: |
-              make run &
-              until curl --output /dev/null --silent --head --fail http://host.docker.internal:9000; do
-                  echo "Waiting for service to be available..."
-                  sleep 5
-              done
+              make run && echo "==> Waiting for service to be available..."
+              sleep 10
               make end-to-end
 
           

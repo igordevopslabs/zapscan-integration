@@ -16,7 +16,7 @@ func init() {
 
 // @title API ZapScan Integration
 // @version 1.1
-// @description A simple REST API to integration a ZAProxy vulnerability scans
+// @description A simple REST API to integration a ZAProxy vulnerability scan
 // @host localhost:9000
 // @BasePath /
 // @SecurityDefinitions BasicAuth
