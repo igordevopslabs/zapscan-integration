@@ -17,7 +17,7 @@
     
     jobs:  
       lint:
-        name: Lint
+        name: Scans and Checks
         runs-on: ubuntu-latest
         steps:
           - name: Checkout
@@ -49,11 +49,7 @@
                 
           - name: Run Setup and Tests
             run: |
-              make run && echo "==> Waiting for service to be available..."
-              sleep 10
-              curl -vs http://localhost:9000/list
-              curl -vs http://host.docker.internal:9000/list
-              make end-to-end
+              make run 
 
           
 

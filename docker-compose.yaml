@@ -52,22 +52,20 @@ services:
 
   e2e-test:
     container_name: "test-zap-int"
-    profiles:
-      - "zap"
     image: "jetbrains/intellij-http-client:233.11799.67"
     extra_hosts:
-      - "host.docker.internal:172.17.0.1"
+      - "host.docker.internal:host-gateway"
     volumes:
-      - "./tests/e2e:/workdir"
+      - ./tests/e2e:/workdir
     command:
       - "-LVERBOSE"
       - "-e"
       - "end_to_end"
       - "-v"
-      - "tests/e2e/http-client.env.json"
+      - "http.client.env.json"
       - "-r"
       - "-D"
-      - "tests/e2e/list.http"
+      - "list.http"
 
 volumes:
   postgres_data:

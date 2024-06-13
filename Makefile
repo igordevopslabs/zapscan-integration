@@ -1,6 +1,3 @@
-DOCKER_INTERNAL_IP := $(shell docker network inspect bridge | jq -r '.[0].IPAM.Config[0].Gateway')
-PATH_TO_TEST=tests/e2e
-
 .PHONY: run
 
 run:
@@ -36,4 +33,4 @@ go-checks:
 
 end-to-end:
 	@echo "==> Running end-to-end tests"
-	docker run --network="host" --rm -v $(PWD)/$(PATH_TO_TEST):/workdir --add-host=host.docker.internal:$(DOCKER_INTERNAL_IP) jetbrains/intellij-http-client -L VERBOSE -e end_to_end -v http.client.env.json -r -D list.http
+	docker run --network="host" --rm -v $(PWD)/tests/e2e:/workdir --add-host=host.docker.internal:host-gateway jetbrains/intellij-http-client -L VERBOSE -e end_to_end -v http.client.env.json -r -D list.http 
