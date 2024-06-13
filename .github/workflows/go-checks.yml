@@ -46,14 +46,15 @@
           - name: Run Build 
             run: |
               make build
-
-          - name: Setup Stack
-            run: |
-                make run
                 
-          - name: Run e2e tests 
+          - name: Run Setup and Tests
             run: |
-                make end-to-end
+              make run &
+              until curl --output /dev/null --silent --head --fail http://host.docker.internal:9000; do
+                  echo "Waiting for service to be available..."
+                  sleep 5
+              done
+              make end-to-end
 
           
 
