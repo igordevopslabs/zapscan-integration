@@ -50,6 +50,7 @@
           - name: Run Setup and Tests
             run: |
               make run 
+              docker logs test-zap-int
 
           
 
