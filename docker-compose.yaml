@@ -52,6 +52,8 @@ services:
 
   e2e-test:
     container_name: "test-zap-int"
+    profiles: 
+      - "e2e"
     image: "jetbrains/intellij-http-client:233.11799.67"
     extra_hosts:
       - "host.docker.internal:host-gateway"

@@ -3,6 +3,9 @@
 run:
 	@echo "==> Iniciando a aplicação..."
 	docker-compose up -d
+	@echo "==> waiting app up..."
+	sleep 120
+	docker-compose --profile=e2e up
 
 build:
 	@echo "==> Building app"
