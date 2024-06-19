@@ -49,7 +49,7 @@
                 
           - name: Run Setup and Tests
             run: |
-              make run 
+              make run-e2e
               docker logs test-zap-int | grep -i "Response code"
 
           
