@@ -40,6 +40,7 @@ run-e2e:
 	@echo "==> waiting app up..."
 	sleep 120
 	docker-compose --profile=e2e up
-	sleep 30
+	docker logs test-zap-int | grep -i "Response code"
+	sleep 10
 	@echo "==> Finalizando stack da aplicação..."
 	docker-compose down
