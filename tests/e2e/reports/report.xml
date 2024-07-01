@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites tests="8" name="IntelliJ IDEA HTTP Client">
-  <testsuite tests="8" name="test" failures="0" errors="0" skip="0">
-    <testcase classname="http.ListAllExistingScans" name="Response" time="0.701" />
-    <testcase classname="http.ListAllExistingScans" name="Response Handler" time="0.001" />
-    <testcase classname="http.createScanIntree" name="Response" time="0.266" />
+<testsuites tests="4" name="IntelliJ IDEA HTTP Client">
+  <testsuite tests="4" name="test" failures="0" errors="0" skip="0">
+    <testcase classname="http.ListAllExistingScans" name="Response" time="0.242" />
+    <testcase classname="http.ListAllExistingScans" name="Response Handler" time="0.0" />
+    <testcase classname="http.createScanIntree" name="Response" time="0.084" />
     <testcase classname="http.createScanIntree" name="Response Handler" time="0.0" />
-    <testcase classname="http.startScan" name="Response" time="0.09" />
-    <testcase classname="http.startScan" name="Response Handler" time="0.0" />
-    <testcase classname="http.results" name="Response" time="0.079" />
-    <testcase classname="http.results" name="Response Handler" time="0.0" />
   </testsuite>
 </testsuites>
 

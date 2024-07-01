@@ -177,11 +177,13 @@ func GetScanResult(scanId string) (models.Scan, error) {
 		return scan, fmt.Errorf("non-OK HTTP status: %s", resp.Status)
 	}
 
+	//parese do valor do do resp.Body para a body
 	body, err = io.ReadAll(resp.Body)
 	if err != nil {
 		return scan, errors.New("failed to read response body")
 	}
 
+	//atribui valor de body a scanResult
 	var scanResult ScanResult
 	if err := json.Unmarshal(body, &scanResult); err != nil {
 		return scan, errors.New("failed to parse response JSON")
@@ -193,7 +195,7 @@ func GetScanResult(scanId string) (models.Scan, error) {
 	// Verificar se o scan já existe no banco de dados
 	existingScan, _ := repository.GetScanByScanID(scanId)
 
-	// Se o scan já existe, atualizar o registro existente
+	// Se o scan já existe, ou seja, diferente de nil, atualizar o registro existente
 	if existingScan != nil {
 		existingScan.Status = "100"
 		existingScan.Results = string(body)

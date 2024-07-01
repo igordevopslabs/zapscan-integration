@@ -2,12 +2,8 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	docs "github.com/igordevopslabs/zapscan-integration/docs"
 	"github.com/igordevopslabs/zapscan-integration/internal/controllers"
 	"github.com/igordevopslabs/zapscan-integration/pkg/database"
-	"github.com/igordevopslabs/zapscan-integration/pkg/middleware"
-	swaggerfiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func init() {
@@ -25,14 +21,6 @@ func init() {
 func main() {
 
 	r := gin.Default()
-
-	//Documentation
-	docs.SwaggerInfo.BasePath = "/"
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
-	r.POST("/create", middleware.BasicAuth(), controllers.CreateSite)
-	r.POST("/start", middleware.BasicAuth(), controllers.StartScan)
-	r.GET("/list", middleware.BasicAuth(), controllers.ListScans)
-	r.GET("/results/:scanId", middleware.BasicAuth(), controllers.GetScanResult)
-
+	controllers.RegisterRoutes(r)
 	r.Run()
 }

@@ -3,9 +3,6 @@
 run:
 	@echo "==> Iniciando a aplicação..."
 	docker-compose up -d
-	@echo "==> waiting app up..."
-	sleep 120
-	docker-compose --profile=e2e up
 
 build:
 	@echo "==> Building app"
@@ -37,3 +34,10 @@ go-checks:
 end-to-end:
 	@echo "==> Running end-to-end tests"
 	docker run --network="host" --rm -v $(PWD)/tests/e2e:/workdir --add-host=host.docker.internal:host-gateway jetbrains/intellij-http-client -L VERBOSE -e end_to_end -v http.client.env.json -r -D list.http 
+
+tests:
+	@echo "==> Iniciando a aplicação..."
+	docker-compose up -d
+	@echo "==> waiting app up..."
+	sleep 120
+	docker-compose --profile=e2e up

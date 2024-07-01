@@ -49,7 +49,7 @@
                 
           - name: Run Setup and Tests
             run: |
-              make run 
+              make tests 
               docker logs -f test-zap-int | grep -i "Response code"
 
           
